@@ -1,0 +1,310 @@
+/*
+ * CSS for jsPsych experiments.
+ *
+ * This stylesheet provides minimal styling to make jsPsych
+ * experiments look polished without any additional styles.
+ */
+
+ /* Container holding jsPsych content */
+
+  .instruct {
+    padding: 60px 200px 10px 200px;
+    text-align: left;
+  }
+
+
+ .next-section-screen p {
+   padding-top: 200px;
+ }
+ .jspsych-display-element {
+   display: flex;
+   display: -webkit-flex;
+   justify-content: center;
+   align-items: center;
+   height: 100%;
+   width: 100%;
+   overflow-y: scroll;
+ }
+
+ div#jspsych-html-keyboard-response-stimulus {
+   height: 100%;
+   width: 100%;
+ }
+ .jspsych-content {
+   width: 100%;
+   height: 100%;
+   text-align: center;
+   margin: auto; /* this is for overflowing content */
+ }
+
+ .feedback-top {
+   padding-top: 80px;
+ }
+
+ .feedback-bottom {
+   padding-top: 350px;
+ }
+
+ .jspsych-display-element:focus {
+   outline: none;
+ }
+
+ .jspsych-content-wrapper {
+   display: flex;
+   display: -webkit-flex;
+   /*justify-content: center;
+   align-items: center;*/
+   margin: auto; /* this does the same thing as above two lines in this case */
+   flex: 1 1 100%;
+   width: 100%;
+   height: 100%;
+ }
+
+ .container-column {
+   flex-direction: column;
+   -webkit-flex-direction: column;
+   justify-content: space-between;
+   -webkit-justify-content: space-between;
+   align-items: center;
+   height: 100%;
+   padding-top: 40px;
+}
+
+  .stimulus-row-cont {
+    display: -webkit-flex;
+    display: flex;
+    flex-direction: row;
+    -webkit-flex-direction: row;
+    justify-content: center;
+    -webkit-justify-content: center;
+    align-items: center;
+    text-align: center;
+    width: 100%;
+    padding-top: 20px;
+  }
+  .stimulus-row-item-left {
+    flex-direction: column;
+    -webkit-flex-direction: column;
+    justify-content: space-between;
+    -webkit-justify-content: space-between;
+    align-items: center;
+    text-align: center;
+    height: 100%;
+    padding-right: 125px;
+  }
+
+  .stimulus-row-item-right {
+    flex-direction: column;
+    -webkit-flex-direction: column;
+    justify-content: space-between;
+    -webkit-justify-content: space-between;
+    align-items: center;
+    text-align: center;
+    height: 100%;
+    padding-left: 125px;
+  }
+
+
+
+
+/* fonts and type */
+
+@import url(https://fonts.googleapis.com/css?family=Open+Sans:400italic,700italic,400,700);
+
+.jspsych-display-element {
+  font-family: 'Open Sans', 'Arial', sans-serif;
+  font-size: 18px;
+  line-height: 1.6em;
+}
+
+/* Form elements like input fields and buttons */
+
+input[type="text"] {
+  font-family: 'Open Sans', 'Arial', sans-serif;
+  font-size: 14px;
+}
+
+/* borrowing Bootstrap style for btn elements, but combining styles a bit */
+.jspsych-btn {
+  display: inline-block;
+  padding: 6px 12px;
+  margin: 0px;
+  font-size: 14px;
+  font-weight: 400;
+  font-family: 'Open Sans', 'Arial', sans-serif;
+  cursor: pointer;
+  line-height: 1.4;
+  text-align: center;
+  white-space: nowrap;
+  vertical-align: middle;
+  background-image: none;
+  border: 1px solid transparent;
+  border-radius: 4px;
+  color: #333;
+  background-color: #fff;
+  border-color: #ccc;
+}
+
+.jspsych-btn:hover {
+  background-color: #ddd;
+  border-color: #aaa;
+}
+
+.jspsych-btn:disabled {
+  background-color: #eee;
+  color: #aaa;
+  border-color: #ccc;
+  cursor: not-allowed;
+}
+
+/* jsPsych progress bar */
+
+#jspsych-progressbar-container {
+  color: #555;
+  border-bottom: 1px solid #dedede;
+  background-color: #f9f9f9;
+  margin-bottom: 1em;
+  text-align: center;
+  padding: 8px 0px;
+  width: 100%;
+  line-height: 1em;
+}
+#jspsych-progressbar-container span {
+  font-size: 14px;
+  padding-right: 14px;
+}
+#jspsych-progressbar-outer {
+  background-color: #eee;
+  width: 50%;
+  margin: auto;
+  height: 14px;
+  display: inline-block;
+  vertical-align: middle;
+  box-shadow: inset 0 1px 2px rgba(0,0,0,0.1);
+}
+#jspsych-progressbar-inner {
+  background-color: #aaa;
+  width: 0%;
+  height: 100%;
+}
+
+/* Control appearance of jsPsych.data.displayData() */
+#jspsych-data-display {
+  text-align: left;
+}
+
+/* Font Sizes */
+.very-small {
+  font-size: 50%;
+}
+.small {
+  font-size: 75%;
+}
+.large {
+  font-size: 125%;
+}
+.very-large {
+  font-size: 150%;
+}
+
+/* Classes for changing location of things */
+
+.left {
+  float: left;
+}
+.right {
+  float: right;
+}
+.center-content {
+  text-align: center;
+}
+
+.block-center {
+  margin: 1em auto;
+  display: block;
+  padding: 70px 0;
+}
+
+.center-screen {
+  padding: 70px 0;
+}
+
+html {
+  font-family: 'Open Sans', 'Arial', sans-serif;
+  font-size: 18px;
+  line-height: 1.6em;
+}
+
+/* Text based classes */
+/* Used for general instructions */
+.block-text {
+  width:100%;
+  height 100vw;
+  text-align: justify;
+  margin: 0 auto;
+  margin-bottom: 1em;
+  font-size: 24px;
+  line-height: 120%;
+}
+
+/* As above but centered instead of justified. Good for instructions with few lines */
+.center-block-text {
+  width:100%;
+  height 100vw;
+  text-align: center;
+  margin: 0 auto;
+  margin-bottom: 1em;
+  font-size: 26px;
+  line-height: 120%;
+}
+
+/* used for large text shown in the center of the screen, like FB or stimuli */
+.center-text {
+  text-align:center;
+  font-size: 60px;
+  position: relative;
+  top: 50%;
+  -ms-transform: translateY(-50%);
+  -webkit-transform: translateY(-50%);
+  transform: translateY(-50%);
+}
+
+
+/* things i've added */
+/* Buttons */
+.jspsych-btn, #jspsych-instructions-next, #jspsych-instructions-back {
+  font-size:22px;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  padding: 12px 20px 12px 20px;
+  color: white;
+  background-color:cornflowerblue;
+  cursor: pointer;
+  line-height: 1.4;
+  text-align: center;
+  white-space: nowrap;
+  vertical-align: middle;
+  background-image: none;
+  border: 1px solid transparent;
+  border-radius: 4px;
+}
+
+#jspsych-instructions-next, #jspsych-instructions-back {
+ width: 250px;
+}
+
+#jspsych-instructions-next, #jspsych-instructions-back {
+  padding: 12px 40px 12px 40px;
+}
+
+.jspsych-btn:hover, #jspsych-instructions-next:hover, #jspsych-instructions-back:hover {
+  border-color:#999;
+  background-color: darkblue;
+}
+
+
+/*
+body {
+  margin: 100;
+  padding: 0;
+}
+*/

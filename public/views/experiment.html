@@ -1,0 +1,727 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Financial Decision Making Task</title>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+        <script src="../../jspsych-6/jspsych.js"></script>
+        <script src="../../jspsych-6/plugins/jspsych-instructions.js"></script>
+        <script src="../../jspsych-6/plugins/jspsych-image-keyboard-response.js"></script>
+        <script src="../../jspsych-6/plugins/jspsych-html-keyboard-response.js"></script>
+        <script src="../../jspsych-6/plugins/jspsych-html-button-response.js"></script>
+        <script src="../../jspsych-6/plugins/jspsych-mg-survey-text.js"></script>
+        <script src="../../jspsych-6/plugins/jspsych-fullscreen.js"></script>
+        <link href="../../jspsych-6/css/jspsych.css" rel="stylesheet" type="text/css"></link>
+    </head>
+    <body></body>
+    <script>
+        // define global variables
+        var total = 0;
+        var trial = 0;
+        var block = 0;
+        var practice_total = 0;
+        var practice_trial = 0;
+
+
+        var instruct = {
+            type: 'instructions',
+            pages:[
+                '<div class="instruct"><p style="text-align:center"><b>Welcome to our financial decision making study!</b></p>'+
+                '<p>In this study you will work on an investment task.</p>'+
+                '<p>In the task you will repeatedly invest in one of two securities: a <b>risky</b> security (i.e., a <i>stock</i> with <i>risky</i> payoffs) ' +
+                'and a <b>riskless</b> security (i.e., a <i>bond</i> with a <i>known</i> payoff), and will provide estimates as to how good of an investment the risky security is.</p></div></div>',
+                '<div class="instruct"><p style="text-align:center"><b>Task Conditions</b></p>'+
+                '<p>In the task, there are two types of conditions you can face: the <b>GAIN</b> and the <b>LOSS</b> conditions.</p>'+
+                '<ul><li>In the <b>GAIN</b> condition, the two securities will only provide <b>POSITIVE</b> payoffs.</li>'+
+                '<li>In the <b>LOSS</b> condition, the two securities will only provide <b>NEGATIVE</b> payoffs.</li></ul></div>',
+                '<div class="instruct"><p style="text-align:center"><b>Specific details for the <i>GAIN</i> condition</b></p>' +
+                '<p>In the <b><i>GAIN</b></i> condition, on any trial:</p>' +
+                '<ul><li>If you choose to invest in the <b>bond</b>, you will get a payoff of <b>$6</b> <i>for sure</i> at the end of the trial.</li>' +
+                '<li>If you choose to invest in the <b>stock</b>, you will receive a dividend which can be either <b>$10</b> or <b>$2</b>.</li></ul></div>',
+                '<div class="instruct"><p style="text-align:center"><b>Investing In The Stock: Gain Condition</b></p>'+
+                '<p>The stock can either be <b><i>good</i></b> or <b><i>bad</i></b>, and this will determine the likelihood of its dividend being <i><b>high</b> ($10)</i> or <i><b>low</b> ($2)</i></p>' +
+                '<ul><li>If the stock is <b>good,</b> then the probability of receiving the <span style="text-decoration:underline">$10 dividend is 70%</span> and the probability of receiving the <span style="text-decoration:underline">$2 dividend is 30%.</span></li>' +
+                '<li>If the stock is <b>bad,</b> then the probability of receiving the <span style="text-decoration:underline">$10 dividend is 30%</span> and the probability of receiving the <span style="text-decoration:underline">$2 dividend is 70%.</span></li></ul>' +
+                '<p>The dividends paid by this stock are independent from trial to trial, but come from this exact distribution. In other words, once it is determined by the computer that the stock is good, then on each trial the odds of the dividend being $10 are 70%, and the odds of it being $2 are 30%.</p></div>',
+                '<div class="instruct"><p style="text-align:center"><b>Specific details for the <i>LOSS</i> condition</b></p>'+
+                '<p>In the <strong>LOSS</strong> condition, on any trial:</p>'+
+                '<ul><li>If you choose to invest in the <b>bond</b>, you will get a payoff of <b>-$6</b> for sure at the end of the trial.</li>' +
+                '<li>If you choose to invest in the <b>stock</b>, you will receive a dividend which can be either <b>-$10</b> or <b>-$2.</b></li></ul></div>',
+                '<div class="instruct"><p style="text-align:center"><b>Investing In The Stock: LOSS Condition</b></p>'+
+                '<p>The stock can either be <b><i>good</i></b> or <b><i>bad</i></b>, and this will determine the likelihood of its dividend being <i><b>high</b> (-$2)</i> or <i><b>low</b> (-$10).</i></p>' +
+                '<ul><li>If the stock is <b>good,</b> then the probability of receiving the <span style="text-decoration:underline">-$10 ' +
+                'dividend is 30%</span> and the probability of receiving the <span style="text-decoration:underline">-$2 dividend is 70%.</span></li>'+
+                '<li>If the stock is <b>bad,</b> then the probability of recieving the <span style="text-decoration:underline">-$10 dividend is 70%</span>' +
+                ' and the probability of receiving the <span style="text-decoration:underline">-$2 dividend is 30%</span></li></ul>'+
+                '<p>The dividends paid by this stock are independent from trial to trial, but come from this exact distribution. In other words, once it is determined by the computer that the stock is good, then on each trial the odds of the dividend being -$10 are 30%, and the odds of it being -$2 are 70%.</p></div>',
+                '<div class="instruct"><p style="text-align:center"><b>In both <i>GAIN</i> and <i>LOSS</i> conditions</b></p>'+
+                '<p>In each condition, at the beginning of each <span style="text-decoration:underline">block of 6 trials</span>, you do not know which type of stock the computer selected for that block. You may be facing the good stock, or the bad stock, with equal probability.</p></div>',
+                '<div class="instruct"><p style="text-align:center"><b>Task Instructions</b></p>'+
+                '<p>On each trial in the block you will decide whether you want to invest in the <i>stock</i> for the trial and accumulate the dividend paid by the stock, or invest in the <i>bond</i> and add the known payoff to your earnings.</p>'+
+                '<ul><li>Press <b>1</b> to choose the <b>Stock</b></li><li>Press <b>0</b> to choose the <b>Bond</b></li></ul>'+
+                '<p>You will then see the dividend paid by the stock, <i>no matter if you chose the stock or the bond.</i> You will also see the total payoff you have accumulated so far.</p></div>',
+                '<div class="instruct"><p style="text-align:center"><b>Task Instructions</b></p>'+
+                '<p>After you see the dividends we will ask you to tell us what you think the probability is that the stock is the good one (the answer must be a number between 0 and 100 -do not add the % sign, just type in the value)</p>'+
+                '<p>There is always an objective, correct probability that the stock is good, which depends on the history of dividends paid by the stock already, For instance, at the beginning of each block of trials, the probability that the stock is good is exactly 50% and there is no doubt about this value. As you observe the dividends paid by the stock you will update your belief whether or not the stock is good.</p></div>',
+                '<div class="instruct"><p style="text-align:center"><b>Task Instructions</b></p>' +
+                '<p>Every time you provide us with a probability estimate that is within 5% of the correct value (e.g., correct probability is 80% and you say 84%, or 75%) we will add 10 cents to your payment for taking part in this study.</p>'+
+                '<p>Throughout the task you will be told how much you have accumulated through dividends paid by the stock or bond you chose up to that point, and your final pay will be based off the number of probabilities you guessed correctly and your total accumulated dividends.</p.</div>'
+            ],
+            show_clickable_nav: true,
+            allow_keys: false,
+          };
+
+// Practice Block
+        var practice_trial = {
+            type: 'html-keyboard-response',
+            stimulus:'<div class="container-column"><div class="stimulus-row-cont"><div class="stimulus-row-item large"><b>Choose:</b></div></div><div class="stimulus-row-cont"><div class="stimulus-row-item-left center-content">1 For Stock</div><div class="stimulus-row-item-right center-content">0 For Bond</div></div><div class="stimulus-row-cont"><div class="stimulus-row-item-left large"><p>Stock Payoff:</p><p>$2 or $10</p></div><div class="stimulus-row-item-right large"><p>Bond Payoff:</p><p>$6</p></div></div></div>',
+            choices: ['0', '1'],
+            response_ends_trial: true,
+            on_finish: function(data) {
+                var choice = 'Stock';
+                var condition = 'gain';
+                var probability = 'good';
+                var payoff = 0;
+                var stockamount = 0;
+                var rando = Math.floor((Math.random() * 10) +1);
+                practice_trial+= 1;
+                if (data.key_press == 49 && rando <= 7) {
+                    choice = 'Stock';
+                    payoff = 10;
+                    stockamount = 10;
+                } else if (data.key_press == 49 && rando >= 7){
+                    choice = 'Stock';
+                    payoff = 2;
+                    stockamount = 2;
+                } else if (data.key_press == 48 && rando <= 7){
+                    choice = 'Bond';
+                    payoff = 6;
+                    stockamount = 10;
+                } else {
+                    choice = 'Bond';
+                    payoff = 6;
+                    stockamount = 2;
+                }
+                practice_total+= payoff;
+                jsPsych.data.get().addToLast({
+                    choice: choice,
+                    condition: condition,
+                    probability: probability,
+                    payoff: payoff,
+                    stockamount: stockamount,
+                    trial: practice_trial,
+                    trial_name: "choice",
+                    total: practice_total,
+                    practice: true,
+                });
+            }
+        };
+
+        function practice_getTotalFeedback() {
+            var prevtrials = jsPsych.data.get().last(1).values()[0];
+            var payoffAmount = prevtrials.payoff;
+            var choiceName = prevtrials.choice;
+            var stockresult = prevtrials.stockamount;
+            var total = prevtrials.total;
+            return {
+                choice: choiceName,
+                payoffAmount: payoffAmount,
+                total: total,
+                stockresult: stockresult,
+            };
+        };
+
+
+        // feedback screen
+        var practice_totalfeedback = {
+            type: 'html-keyboard-response',
+            trial_duration: 1500,
+            choices: jsPsych.NO_KEYS,
+            response_ends_trial: false,
+            stimulus: function() {
+                var feedbackdata = practice_getTotalFeedback();
+                var stockfb = feedbackdata['stockresult'];
+                var totalAmount = feedbackdata['total'];
+                return '<div class="container-column large"><div class="feedback-top"><b>Stock payoff: $' + stockfb + '</b></div><div class="feedback-bottom">Your total is: $' + totalAmount + '</div></div>';
+            },
+            on_finish: function(data) {
+                jsPsych.data.get().addToLast({
+                    trial_name: "feedback",
+                    practice: true,
+                });
+            }
+        };
+// probability rating question
+        var practice_probability_rating = {
+            type: 'mg-survey-text',
+            questions: [{prompt: '<p class="large"> Probability that this is the <b>good</b> stock:</p>', columns: 3}],
+            preamble: '<p class="center-content"> Enter value between 0 and 100:</p>',
+            end_prompt: '%',
+            on_finish: function(data) {
+                jsPsych.data.get().addToLast({
+                    trial_name: "rating",
+                    trial: practice_trial,
+                    practice: true,
+                });
+            }
+        };
+// Set up expirement trials
+        var gain_good_trial = {
+            type: 'html-keyboard-response',
+            stimulus:'<div class="container-column"><div class="stimulus-row-cont"><div class="stimulus-row-item large"><b>Choose:</b></div></div><div class="stimulus-row-cont"><div class="stimulus-row-item-left center-content">1 For Stock</div><div class="stimulus-row-item-right center-content">0 For Bond</div></div><div class="stimulus-row-cont"><div class="stimulus-row-item-left large"><p>Stock Payoff:</p><p>$2 or $10</p></div><div class="stimulus-row-item-right large"><p>Bond Payoff:</p><p>$6</p></div></div></div>',
+            choices: ['0', '1'],
+            response_ends_trial: true,
+            on_finish: function(data) {
+                var choice = 'Stock';
+                var condition = 'gain';
+                var probability = 'good';
+                var payoff = 0;
+                var stockamount = 0;
+                var high_outcome = null;
+                var rando = Math.floor((Math.random() * 10) +1);
+                trial+= 1;
+                if (data.key_press == 49 && rando <= 7) {
+                    choice = 'Stock';
+                    payoff = 10;
+                    stockamount = 10;
+                    high_outcome = true;
+                } else if (data.key_press == 49 && rando >= 7){
+                    choice = 'Stock';
+                    payoff = 2;
+                    stockamount = 2;
+                    high_outcome = false;
+                } else if (data.key_press == 48 && rando <= 7){
+                    choice = 'Bond';
+                    payoff = 6;
+                    stockamount = 10;
+                    high_outcome = true;
+                } else {
+                    choice = 'Bond';
+                    payoff = 6;
+                    stockamount = 2;
+                    high_outcome = false;
+                }
+                total+= payoff;
+                jsPsych.data.get().addToLast({
+                    choice: choice,
+                    condition: condition,
+                    probability: probability,
+                    payoff: payoff,
+                    stockamount: stockamount,
+                    trial: trial,
+                    trial_name: "choice",
+                    total: total,
+                    block: block,
+                    high_outcome: high_outcome,
+                    practice: false,
+                });
+            }
+        };
+// Gain Bad trial
+        var gain_bad_trial = {
+            type: 'html-keyboard-response',
+            stimulus: '<div class="container-column"><div class="stimulus-row-cont"><div class="stimulus-row-item large"><b>Choose:</b></div></div><div class="stimulus-row-cont"><div class="stimulus-row-item-left center-content">1 For Stock</div><div class="stimulus-row-item-right center-content">0 For Bond</div></div><div class="stimulus-row-cont"><div class="stimulus-row-item-left large"><p>Stock Payoff:</p><p>$2 or $10</p></div><div class="stimulus-row-item-right large"><p>Bond Payoff:</p><p>$6</p></div></div></div>',
+            choices: ['0', '1'],
+            response_ends_trial: true,
+            on_finish: function(data) {
+                var choice = 'Stock';
+                var condition = 'gain';
+                var probability = 'bad';
+                var payoff = 0;
+                var high_outcome = null;
+                var rando = Math.floor((Math.random() * 10) +1);
+                trial+= 1;
+                if (data.key_press == 49 && rando <= 7) {
+                    choice = 'Stock';
+                    payoff = 2;
+                    stockamount = 2;
+                    high_outcome = false;
+                } else if (data.key_press == 49 && rando >= 7) {
+                    choice = 'Stock';
+                    payoff = 10;
+                    stockamount = 10;
+                    high_outcome = true;
+                } else if (data.key_press == 48 && rando <= 7) {
+                    choice = 'Bond';
+                    payoff = 6;
+                    stockamount = 2;
+                    high_outcome = false;
+                } else {
+                    choice = 'Bond';
+                    payoff = 6;
+                    stockamount = 10;
+                    high_outcome = true;
+                }
+                total+= payoff;
+                jsPsych.data.get().addToLast({
+                    choice: choice,
+                    condition: condition,
+                    probability: probability,
+                    payoff: payoff,
+                    stockamount: stockamount,
+                    trial: trial,
+                    trial_name: "choice",
+                    total: total,
+                    block: block,
+                    high_outcome: high_outcome,
+                    practice: false,
+                });
+            }
+        };
+
+        var loss_bad_trial = {
+            type: 'html-keyboard-response',
+            stimulus: '<div class="container-column"><div class="stimulus-row-cont"><div class="stimulus-row-item large"><b>Choose:</b></div></div><div class="stimulus-row-cont"><div class="stimulus-row-item-left center-content">1 For Stock</div><div class="stimulus-row-item-right center-content">0 For Bond</div></div><div class="stimulus-row-cont"><div class="stimulus-row-item-left large"><p>Stock Payoff:</p><p>-$2 or -$10</p></div><div class="stimulus-row-item-right large"><p>Bond Payoff:</p><p>-$6</p></div></div></div>',
+            choices: ['0', '1'],
+            response_ends_trial: true,
+            on_finish: function(data) {
+                var choice = 'Stock';
+                var payoff = 0;
+                var condition = 'loss';
+                var probability = 'bad';
+                var high_outcome = null;
+                var rando = Math.floor((Math.random() * 10) +1);
+                trial+= 1;
+                if (data.key_press == 49 && rando <= 7) {
+                    choice = 'Stock';
+                    payoff = -10;
+                    stockamount = -10;
+                    high_outcome = false;
+                } else if (data.key_press == 49 && rando >= 7) {
+                    choice = 'Stock';
+                    payoff = -2;
+                    stockamount = -2;
+                    high_outcome = true;
+                } else if (data.key_press == 48 && rando <= 7) {
+                    choice = 'Bond';
+                    payoff = -6;
+                    stockamount = -10;
+                    high_outcome = false;
+                } else {
+                    choice = 'Bond';
+                    payoff = -6;
+                    stockamount = -2;
+                    high_outcome = true;
+                }
+                total+= payoff;
+                jsPsych.data.get().addToLast({
+                    choice: choice,
+                    condition: condition,
+                    probability: probability,
+                    payoff: payoff,
+                    stockamount: stockamount,
+                    trial: trial,
+                    trial_name: "choice",
+                    total: total,
+                    block: block,
+                    high_outcome: high_outcome,
+                    practice: false,
+                });
+            }
+        };
+
+        var loss_good_trial = {
+            type: 'html-keyboard-response',
+            stimulus: '<div class="container-column"><div class="stimulus-row-cont"><div class="stimulus-row-item large"><b>Choose:</b></div></div><div class="stimulus-row-cont"><div class="stimulus-row-item-left center-content">1 For Stock</div><div class="stimulus-row-item-right center-content">0 For Bond</div></div><div class="stimulus-row-cont"><div class="stimulus-row-item-left large"><p>Stock Payoff:</p><p>-$2 or -$10</p></div><div class="stimulus-row-item-right large"><p>Bond Payoff:</p><p>-$6</p></div></div></div>',
+            choices: ['0', '1'],
+            response_ends_trial: true,
+            on_finish: function(data) {
+                var choice = 'Stock';
+                var payoff = 0;
+                var condition = 'loss';
+                var probability = 'bad';
+                var high_outcome = null;
+                var rando = Math.floor((Math.random() * 10) +1);
+                trial+= 1;
+                if (data.key_press == 49 && rando <= 7) {
+                    choice = 'Stock';
+                    payoff = -2;
+                    stockamount = -2;
+                    high_outcome = true;
+                } else if (data.key_press == 49 && rando >= 7) {
+                    choice = 'Stock';
+                    payoff = -10;
+                    stockamount = -10;
+                    high_outcome = false;
+                } else if (data.key_press == 48 && rando <= 7) {
+                    choice = 'Bond';
+                    payoff = -6;
+                    stockamount = -2;
+                    high_outcome = true;
+                } else {
+                    choice = 'Bond';
+                    payoff = -6;
+                    stockamount = -10;
+                    high_outcome = false;
+                }
+                total+= payoff;
+                jsPsych.data.get().addToLast({
+                    choice: choice,
+                    condition: condition,
+                    probability: probability,
+                    payoff: payoff,
+                    stockamount: stockamount,
+                    trial: trial,
+                    trial_name: "choice",
+                    total: total,
+                    block: block,
+                    high_outcome: high_outcome,
+                    practice: false,
+                });
+            }
+        };
+// Function to get feedback data
+        function getTotalFeedback() {
+            var prevtrials = jsPsych.data.get().filter({trial_name:"choice"}).last(1).values()[0];
+            var payoffAmount = prevtrials.payoff;
+            var choiceName = prevtrials.choice;
+            var stockresult = prevtrials.stockamount;
+            var total = prevtrials.total;
+            return {
+                choice: choiceName,
+                payoffAmount: payoffAmount,
+                total: total,
+                stockresult: stockresult,
+            };
+        };
+
+        function getCorrectProbability() {
+            var last_choice_data = jsPsych.data.get().filter({trial_name:"choice"}).last(1).values()[0];
+            var curr_block = last_choice_data.block;
+            var curr_block_data = jsPsych.data.get().filter({block: curr_block});
+            var n = curr_block_data.filter({trial_name:"choice"}).count();
+            var t = curr_block_data.select('high_outcome').subset(function(x){ return x == true; }).count();
+            var q = 70;
+            var p = 50;
+            var prob = (1/(1+((100-p)/p)*(Math.pow((q/(100-q)), (n-(2*t)))))) * 100;
+            var prob_t = +prob.toFixed(2);
+            return prob_t;
+        };
+
+        function getFinalFeedback() {
+            var final_total = jsPsych.data.get().filter({trial_name:"choice"}).last(1).values()[0].total;
+            var n_correct_responses = jsPsych.data.get().filter({trial_name:"rating", practice:false}).select('correct').subset(function(x){ return x == true; }).count();
+            return {
+                final_total: final_total,
+                n_correct: n_correct_responses
+            };
+        };
+
+
+
+// feedback screen
+        var totalfeedback = {
+            type: 'html-keyboard-response',
+            trial_duration: 1500,
+            choices: jsPsych.NO_KEYS,
+            response_ends_trial: false,
+            stimulus: function() {
+                var feedbackdata = getTotalFeedback();
+                var stockfb = feedbackdata['stockresult'];
+                var totalAmount = feedbackdata['total'];
+                return '<div class="container-column large"><div class="feedback-top"><b>Stock payoff: $' + stockfb + '</b></div><div class="feedback-bottom">Your total is: $' + totalAmount + '</div></div>';
+            },
+            on_finish: function(data) {
+                jsPsych.data.get().addToLast({
+                    trial_name: "feedback",
+                    practice: false,
+                });
+            }
+        };
+
+
+// probability rating question
+        var probability_rating = {
+            type: 'mg-survey-text',
+            questions: [{prompt: '<p class="large"> Probability that this is the <b>good</b> stock:</p>', columns: 3}],
+            preamble: '<p class="center-content"> Enter value between 0 and 100:</p>',
+            end_prompt: '%',
+            on_finish: function(data) {
+                var corr_prob = getCorrectProbability();
+                var prob = (100 * corr_prob);
+                var respint = parseInt(data.responses);
+                var resp = (100 * respint);
+                var correct = null;
+                if (((prob - 500) <= resp) && (resp <= (prob + 500))) {
+                    correct = true;
+                } else {
+                    correct = false;
+                }
+                jsPsych.data.get().addToLast({
+                    trial_name: "rating",
+                    trial: trial,
+                    block: block,
+                    correct_probability: corr_prob,
+                    correct: correct,
+                    practice: false,
+                });
+            }
+        };
+
+        var practice_screen= {
+            type: 'html-keyboard-response',
+            stimulus: '<div class="next-section-screen"><p class="center-block-text"><b>Practice Session</p></b>'+
+            '<p class="center-block-text">Press <strong>enter</strong> when you are ready to begin the practice session.</p></div>',
+            choices: [13]
+        };
+
+        var start_test_screen= {
+            type: 'html-keyboard-response',
+            stimulus: '<div class="next-section-screen"><p class="center-block-text"><b>End of Practice Section</b></p>'+
+            '<p class="center-block-text">Press <strong>enter</strong> when you are ready to begin the first block.</p></div>',
+            choices: [13],
+            on_finish: function() {
+                block+=1;
+            },
+        };
+
+        var next_block_screen= {
+            type: 'html-keyboard-response',
+            stimulus: '<div class="next-section-screen"><p class="center-block-text"><b>End of Block</b></p><p class="center-block-text">Press <strong>enter</strong> when you are ready to begin the next block.</p></div>',
+            choices: [13],
+            on_finish: function() {
+                block+=1;
+            },
+        };
+
+        var end_screen= {
+            type: 'html-button-response',
+            choices: ["End Study"],
+            response_ends_trial: true,
+            stimulus: function() {
+                var finalFeedback = getFinalFeedback();
+                var end_total = finalFeedback.final_total;
+                var n_correct = finalFeedback.n_correct;
+                var alldata = jsPsych.data.get();
+                return '<div class="next-section-screen"><p class="center-block-text">Total number of <b>correct</b> probability estimates: ' + n_correct + '</p><p class="center-block-text">Total accumulated dividends: $' + end_total + '</p></div>';
+            }
+        };
+
+
+        var browserid = {
+            timeline: [if_fullscreen],
+            conditional_function: function(){
+                if (navigator.userAgent.search("Safari") >= 0 && navigator.userAgent.search("Chrome") < 0) {
+                    return false;
+                } else {
+                return true;
+                }
+            }
+        };
+
+        var if_fullscreen = {
+          type: 'fullscreen',
+          fullscreen_mode: true
+        };
+
+        var timeline = [];
+        if (navigator.userAgent.search("Safari") >= 0 && navigator.userAgent.search("Chrome") < 0) {
+          timeline.push({
+            type: 'fullscreen',
+            fullscreen_mode: false
+          });
+        } else if (navigator.userAgent.search("Firefox") >= 0) {
+          timeline.push({
+            type: 'fullscreen',
+            fullscreen_mode: true
+          });
+        } else if (navigator.userAgent.search("Chrome") >= 0) {
+          timeline.push({
+            type: 'fullscreen',
+            fullscreen_mode: true
+          });
+        } else {
+          timeline.push({
+            type: 'fullscreen',
+            fullscreen_mode: false
+          });
+        }
+
+        timeline.push(instruct);
+        timeline.push(practice_screen);
+        for (var i =0; i < 3; i++) {
+          timeline.push(practice_trial);
+          timeline.push(practice_totalfeedback);
+          timeline.push(practice_probability_rating);
+        }
+        timeline.push(start_test_screen);
+
+        if (Math.floor((Math.random() * 10) +1) <= 5) {
+            for (var i = 0; i < 6; i++) {
+                timeline.push(gain_good_trial);
+                timeline.push(totalfeedback);
+                timeline.push(probability_rating);
+            }
+        } else {
+            for (var i = 0; i < 6; i++) {
+                timeline.push(gain_bad_trial);
+                timeline.push(totalfeedback);
+                timeline.push(probability_rating);
+            }
+        };
+//learning block 2: LOSS
+
+        timeline.push(next_block_screen);
+        if (Math.floor((Math.random() * 10) +1) <= 5) {
+            for (var i = 0; i < 6; i++) {
+                timeline.push(loss_good_trial);
+                timeline.push(totalfeedback);
+                timeline.push(probability_rating);
+            }
+        } else {
+            for (var i = 0; i < 6; i++) {
+                timeline.push(loss_bad_trial);
+                timeline.push(totalfeedback);
+                timeline.push(probability_rating);
+            }
+        };
+//learning block 3: GAIN
+        timeline.push(next_block_screen);
+        if (Math.floor((Math.random() * 10) +1) <= 5) {
+            for (var i = 0; i < 6; i++) {
+                timeline.push(gain_good_trial);
+                timeline.push(totalfeedback);
+                timeline.push(probability_rating);
+            }
+        } else {
+            for (var i = 0; i < 6; i++) {
+                timeline.push(gain_bad_trial);
+                timeline.push(totalfeedback);
+                timeline.push(probability_rating);
+            }
+        };
+//learning block 4: GAIN
+        timeline.push(next_block_screen);
+        if (Math.floor((Math.random() * 10) +1) <= 5) {
+            for (var i = 0; i < 6; i++) {
+                timeline.push(gain_good_trial);
+                timeline.push(totalfeedback);
+                timeline.push(probability_rating);
+            }
+        } else {
+            for (var i = 0; i < 6; i++) {
+                timeline.push(gain_bad_trial);
+                timeline.push(totalfeedback);
+                timeline.push(probability_rating);
+            }
+        };
+//learning block 5: LOSS
+        timeline.push(next_block_screen);
+        if (Math.floor((Math.random() * 10) +1) <= 5) {
+            for (var i = 0; i < 6; i++) {
+                timeline.push(loss_good_trial);
+                timeline.push(totalfeedback);
+                timeline.push(probability_rating);
+            }
+        } else {
+            for (var i = 0; i < 6; i++) {
+                timeline.push(loss_bad_trial);
+                timeline.push(totalfeedback);
+                timeline.push(probability_rating);
+            }
+        };
+//learning block 6: LOSS
+        timeline.push(next_block_screen);
+        if (Math.floor((Math.random() * 10) +1) <= 5) {
+            for (var i = 0; i < 6; i++) {
+                timeline.push(loss_good_trial);
+                timeline.push(totalfeedback);
+                timeline.push(probability_rating);
+            }
+        } else {
+            for (var i = 0; i < 6; i++) {
+                timeline.push(loss_bad_trial);
+                timeline.push(totalfeedback);
+                timeline.push(probability_rating);
+            }
+        };
+//learning block 7: GAIN
+        timeline.push(next_block_screen);
+        if (Math.floor((Math.random() * 10) +1) <= 5) {
+            for (var i = 0; i < 6; i++) {
+                timeline.push(gain_good_trial);
+                timeline.push(totalfeedback);
+                timeline.push(probability_rating);
+            }
+        } else {
+            for (var i = 0; i < 6; i++) {
+                timeline.push(gain_bad_trial);
+                timeline.push(totalfeedback);
+                timeline.push(probability_rating);
+            }
+        };
+//learning block 8: LOSS
+        timeline.push(next_block_screen);
+        if (Math.floor((Math.random() * 10) +1) <= 5) {
+            for (var i = 0; i < 6; i++) {
+                timeline.push(loss_good_trial);
+                timeline.push(totalfeedback);
+                timeline.push(probability_rating);
+            }
+        } else {
+            for (var i = 0; i < 6; i++) {
+                timeline.push(loss_bad_trial);
+                timeline.push(totalfeedback);
+                timeline.push(probability_rating);
+            }
+        };
+//learning block 9: LOSS
+        timeline.push(next_block_screen);
+        if (Math.floor((Math.random() * 10) +1) <= 5) {
+            for (var i = 0; i < 6; i++) {
+                timeline.push(loss_good_trial);
+                timeline.push(totalfeedback);
+                timeline.push(probability_rating);
+            }
+        } else {
+            for (var i = 0; i < 6; i++) {
+                timeline.push(loss_bad_trial);
+                timeline.push(totalfeedback);
+                timeline.push(probability_rating);
+            }
+        };
+//Learning block 10: gain
+        timeline.push(next_block_screen);
+        if (Math.floor((Math.random() * 10) +1) <= 5) {
+            for (var i = 0; i < 6; i++) {
+                timeline.push(gain_good_trial);
+                timeline.push(totalfeedback);
+                timeline.push(probability_rating);
+            }
+        } else {
+            for (var i = 0; i < 6; i++) {
+                timeline.push(gain_bad_trial);
+                timeline.push(totalfeedback);
+                timeline.push(probability_rating);
+            }
+        };
+
+        timeline.push(end_screen);
+
+        jsPsych.init({
+            timeline: timeline,
+            on_finish: function() {
+                var query = window.location.search;
+                var passdata = query.substring(query.indexOf('=')+1);
+                var userid = query.substring(query.indexOf('=')+1, query.indexOf('Q1')-1);
+                var alldata = jsPsych.data.get().json();
+                $.ajax({
+                    type: "POST",
+                    url: "/experiment-data",
+                    data: JSON.stringify({
+                        userid: userid,
+                        data: alldata
+                    }),
+                    contentType: "application/json"
+                })
+                .done(function() {
+                    console.log('end');
+                    window.location.href = ('https://survey.qualtrics.com/jfe/form/SV_cMyONW03KPFX7tH?P=2&userid='+passdata);
+                })
+                .fail(function() {
+                    alert("A problem occurred while writing to the database. Please contact the researcher for more information.");
+                    window.location.href = ('https://survey.qualtrics.com/jfe/form/SV_cMyONW03KPFX7tH?P=2&userid='+passdata);
+                })
+            }
+        });
+    </script>
+</html>
